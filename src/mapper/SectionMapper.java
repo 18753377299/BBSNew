@@ -1,0 +1,38 @@
+package mapper;
+
+import java.util.ArrayList;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import domain.Section;
+//于兆熙
+public interface SectionMapper {
+	
+	//查询所有版块信息
+	@Select("select * from b_section order by sectionid asc")
+	ArrayList<Section> querySection();
+	
+	//按SectionId查询版块信息
+	@Select("select * from b_section where sectionid = #{sectionId}")
+	Section queryBySectionId(Section section);
+	
+	//按SectionName查询版块信息
+	@Select("select * from b_section where sectionName = #{sectionName}")
+	ArrayList<Section> queryBySectionName(Section section);
+	
+	//删除版块
+	@Delete("delete from b_section where sectionid = #{sectionId}")
+	boolean deleteSection(Section section);
+	
+	//增加版块
+	@Insert("insert into b_section (sectionid,sectionName) values (#{sectionId},#{sectionName})")
+	boolean addSection(Section section);
+	
+	//修改版块
+	@Update("update b_section set sectionname = #{sectionName} where sectionid = #{sectionId}")
+	boolean updateSection(Section section);
+
+}

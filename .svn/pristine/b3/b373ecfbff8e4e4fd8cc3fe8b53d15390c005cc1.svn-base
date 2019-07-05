@@ -1,0 +1,85 @@
+package mapper;
+
+import java.util.Map;
+
+import domain.Page;
+import domain.Section;
+import domain.User;
+
+public class PostYProvider {
+
+	public String queryPostSql(Map<String, Object> map) {
+
+		Page page = (Page) map.get("param1");
+		Section section = (Section) map.get("param2");
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM ( ");
+		sql.append("SELECT P.*,ROWNUM RN FROM (");
+		sql.append("SELECT * FROM B_POST WHERE PARENTID IS NULL ");
+		if (section.getSectionId() != 0) {
+			sql.append("AND SECTIONID = " + section.getSectionId() + " ");
+		}
+		sql.append("ORDER BY POSTTIME DESC");
+		sql.append(") P WHERE ROWNUM <= " + page.getPage() * page.getRows()
+				+ "");
+		sql.append(") WHERE RN > " + (page.getPage() - 1) * page.getRows());
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
+
+	public String queryBestPostSql(Map<String, Object> map) {
+
+		Page page = (Page) map.get("param1");
+		Section section = (Section) map.get("param2");
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM ( ");
+		sql.append("SELECT P.*,ROWNUM RN FROM (");
+		sql.append("SELECT * FROM B_POST WHERE BESTPOST = 1 ");
+		if (section.getSectionId() != 0) {
+			sql.append("AND SECTIONID = " + section.getSectionId() + " ");
+		}
+		sql.append("ORDER BY POSTTIME DESC");
+		sql.append(") P WHERE ROWNUM <= " + page.getPage() * page.getRows()
+				+ "");
+		sql.append(") WHERE RN > " + (page.getPage() - 1) * page.getRows());
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
+
+	public String queryByUserIdSql(Map<String, Object> map) {
+
+		Page page = (Page) map.get("param1");
+		User user = (User) map.get("param2");
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM ( ");
+		sql.append("SELECT P.*,ROWNUM RN FROM (");
+		sql.append("SELECT * FROM B_POST WHERE PARENTID IS NULL ");
+		sql.append("AND USERID = " + user.getUserId() + " ");
+		sql.append("ORDER BY POSTTIME DESC");
+		sql.append(") P WHERE ROWNUM <= " + page.getPage() * page.getRows()
+				+ "");
+		sql.append(") WHERE RN > " + (page.getPage() - 1) * page.getRows());
+		return sql.toString();
+	}
+
+	public String queryHufuPostByUserId(Map<String, Object> map) {
+
+		Page page = (Page) map.get("param1");
+		User user = (User) map.get("param2");
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM ( ");
+		sql.append("SELECT P.*,ROWNUM RN FROM (");
+		sql.append("SELECT * FROM B_POST WHERE PARENTID IS NOT NULL ");
+		sql.append("AND USERID = " + user.getUserId() + " ");
+		sql.append("ORDER BY POSTTIME DESC");
+		sql.append(") P WHERE ROWNUM <= " + page.getPage() * page.getRows()
+				+ "");
+		sql.append(") WHERE RN > " + (page.getPage() - 1) * page.getRows());
+		return sql.toString();
+	}
+
+}

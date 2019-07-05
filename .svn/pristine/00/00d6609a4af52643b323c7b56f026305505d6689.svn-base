@@ -1,0 +1,63 @@
+package mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+
+
+import org.apache.ibatis.annotations.Update;
+
+import com.sun.org.glassfish.gmbal.ParameterNames;
+
+import domain.User;
+
+public interface UserMapper {
+	
+//	@Select("select * from b_user where username = #{username}")
+//	User login(User user);
+//	
+//	@SelectProvider(type = UserProvider.class, method = "getUsersSql")
+//	List<User> queryAll(PagerUser pagerUser);
+//	
+//	@SelectProvider(type = UserProvider.class, method = "getTotalRows")
+//	int getTotalRows();
+	
+	//校验用户名是否存在
+	@Select("select count(*) from b_user where username=#{username}")
+	int ajaxValidateUsername(@Param("username") String username);
+	
+	//查询用户信息
+	@Select("select username,sex,age,image,email from b_user where userId=#{userId}")
+	User find(User user);
+	
+	//修改用户
+	@Update("update b_user set "
+			+ "sex=#{sex},age=#{age},image=#{image},email=#{email} where userId=#{userId}")
+	void editMyInfo(@Param("sex") String sex,@Param("age") String age,
+			@Param("image") String image,@Param("email") String email,@Param("userId") Integer userId);
+	
+	//添加用户
+	@Insert("insert into b_user(userId,username,password,sex,registtime,permission,email) values(#{userId},#{username},#{password},#{sex},#{registTime},#{permission},#{email})")
+	void add(User user);
+	//查询修改的用户是否存在
+	 @Select("select count(*) from b_user where userId=#{userId} and username=#{username}")
+	 int selectByUserIdAndUsername(@Param("userId")int userId,@Param("username") String username);
+	 
+	//登录功能
+	 @Select("select * from b_user where username=#{username} and password=#{password}")
+	 User login(User user);
+	 
+	 //查找用户是否存在
+	 @Select("select count(*) from b_user where userId=#{userId} and password=#{password}")
+	 int selectByUserIdAndPassword(@Param("userId")int userId,@Param("password") String password);
+	 
+	 //修改密码
+	 @Update("update b_user set password=#{newpass} where userId=#{userId}")
+	 void updatePassword(@Param("newpass")String newpass,@Param("userId")int userId);
+	 
+	 
+	
+}

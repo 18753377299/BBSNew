@@ -1,0 +1,16 @@
+package mapper;
+
+import java.util.ArrayList;
+
+import org.apache.ibatis.annotations.SelectProvider;
+
+import domain.Page;
+import domain.Post;
+
+
+
+public interface PostMapper {
+	//分页查询
+	@SelectProvider(type=PostProvider.class,method="queryPostSql")
+	ArrayList<Post> queryPostSql(Page page);	
+}

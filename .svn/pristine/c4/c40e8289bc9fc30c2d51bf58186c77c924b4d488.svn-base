@@ -1,0 +1,184 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>用户管理</title>
+<jsp:include page="/common/easyui.jsp"/>
+</head>
+<body class="easyui-layout">
+<!-- 北区 -->
+<div data-options="region:'north',height:50">
+	<jsp:include page="/common/head.jsp"/>
+</div>
+<!-- 中区 -->
+<div data-options="region:'center',border:false">
+<div class="easyui-layout" data-options="fit:true">
+	<!-- 左 -->
+	<div data-options="region:'west',width:150,border:false"></div>
+	<!-- 右 -->
+	<div data-options="region:'east',width:150,border:false"></div>
+	<!-- 中 -->
+	<div data-options="region:'center',border:false">
+		<table id="dg" class="easyui-datagrid" title="用户信息管理" iconCls="icon-edit" toolbar="#toolbar"
+				url="${root }/userMgr/query.do"
+				striped=true idField="username" rownumbers=true fitColumns=true singleSelect=true 
+				pagination=true  pageList=[5,10,20,30,50]>
+			<thead>
+				<tr>
+					<th data-options="field:'id',sortable:true,width:1">用户名</th>
+					<th data-options="field:'username',width:1">密码</th>
+					<th data-options="field:'password',sortable:true,width:1">用户身份</th>
+					<th data-options="field:'xz',checkbox:true,width:1">操作</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="toolbar">
+			<span style="color:green">用户名:</span><input id="yhm"/>
+			<span style="color:green">身份标识:</span>
+			<select id="sfbz">
+				<option value="">请选择</option>
+				<option value="0">管理员</option>
+				<option value="3">普通用户</option>
+			</select>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="searchUser()">查&nbsp;找</a>
+			<a href="#" class="easyui-linkbutton"  data-options="iconCls:'icon-redo'" onclick="resetSearch()">重&nbsp;置</a>
+			<span style="float:right;">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="addUser()">新增</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'" onclick="updateUser()">修改</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" onclick="deleteUser()">删除</a>
+			</span>
+		</div>
+		
+		<!-- 对话框：增、改、删 -->
+		<div id="dlg" class="easyui-dialog" style="width:350px;height:230px;padding:10px 20px" collapsible="true" closed=true buttons="#dlg-buttons">
+			<font color="gray" size="4">账号信息</font><hr />
+			<form id="fm" method="post">
+			<table>
+				<tr>
+					<td><label style="font-size: 14px;color: gray;">用户名:</label></td>
+					<td><input name="username1" id="username1" onblur="$('#username').val(this.value)" maxlength="16" class="easyui-validatebox" required="true"  validType="remote['${root}/userMgr/existedUser.do','username']" invalidMessage="该用户名已被注册"/></td>
+					<td><input name="username" id="username" type="hidden"/></td>
+				</tr>
+				<tr>
+					<td><label style="font-size: 14px;color: gray;">密码:</label></td>
+					<td><input name="pwd"  id="pwd" maxlength="6" class="easyui-validatebox" type="password" required="true" validType="length[1,6]"/></td>
+				</tr>
+				<tr>
+					<td><label style="font-size: 14px;color: gray;">确认密码:</label></td>
+					<td><input name="pwd2" id="pwd2" class="easyui-validatebox" type="password"   validType="pwdEquals['#pwd']" /></td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		<div id="dlg-buttons" style="text-align: center;">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="saveUser()">保存</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+		</div>
+	</div>
+</div>
+</div>
+<!-- 南区 -->
+<div data-options="region:'south'">
+	<jsp:include page="/common/foot.jsp"/>
+</div>
+<script type="text/javascript">
+/**添加新用户*/
+function addUser(){
+	$('#fm').form('clear');
+	$('#dlg').dialog('open').dialog('setTitle','新增用户');
+	$("#username1").attr("class","easyui-validatebox").attr("disabled",false).focus();
+	url = '${root}/userMgr/addUser.do';
+}
+
+/**更新用户信息(密码)*/
+function updateUser () {
+	var row = $('#dg').datagrid('getSelected');
+	if (row){
+		$("#username1").removeAttr("class");
+		$('#fm').form('load',row);
+		$("#username1").val(row.username);
+		$('#dlg').dialog('open').dialog('setTitle','修改用户信息');
+		$("#username1").attr("disabled",true);
+		url = '${root}/userMgr/updateUser.do';
+	}
+} 
+
+/**删除用户*/
+function deleteUser(){
+	var row = $('#dg').datagrid('getSelected');
+	if (row){
+		$.messager.confirm('确认','确定删除该用户吗?',function(r){
+			if (r){
+				$.post('${root}/userMgr/deleteUser.do',{username:row.username},function(ret){
+					if (ret == true){
+						$.messager.show({
+							title: '成功',
+							msg: row.username+"的账户信息已被删除！"
+						});
+						$('#dg').datagrid('reload');
+					} else {
+						$.messager.show({
+							title: '失败',
+							msg: '操作失败！'
+						});
+					}
+				});
+			}
+		});
+	}
+}
+
+//保存
+function saveUser(){
+	$('#fm').form('submit',{
+		url: url,
+		onSubmit: function(){
+			return $(this).form('validate');
+		},
+		success: function(ret){
+			if (ret == "true"){
+				$.messager.show({
+					title: '成功',
+					msg: '操作成功！'
+				});
+				$('#dlg').dialog('close');
+				$('#dg').datagrid('reload');
+			} else {
+				$.messager.show({
+					title: '失败',
+					msg: '操作失败！'
+				});
+			}
+		}
+	});
+}
+
+/**查询用户*/
+function searchUser () {
+	$('#dg').datagrid('load',{
+		username: $('#yhm').val(),
+		sfbz: $('#sfbz').val()
+	}); 
+}
+
+/**重置查询条件*/
+function resetSearch () {
+	$('#yhm').val("");
+	$('#sfbz').val("");
+}
+
+$(function(){
+	$.extend($.fn.validatebox.defaults.rules, {   
+	    pwdEquals: {   
+	        validator: function(value,param){   
+	            return value == $(param[0]).val();   
+	        },   
+	        message: '两次输入的密码不一致'  
+	    }
+	});  
+});
+</script>
+</body>
+</html>

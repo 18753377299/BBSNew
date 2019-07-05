@@ -1,0 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+	if(null == session.getAttribute("root")){
+		session.setAttribute("root", request.getContextPath());
+	}
+%>
+<link rel="stylesheet" type="text/css" href="${root}/easyui/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="${root}/easyui/themes/default/easyui.css"/>
+<script src="${root}/easyui/jquery-1.8.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="${root}/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="${root}/easyui/easyui-lang-zh_CN.js" type="text/javascript" charset="utf-8"></script>

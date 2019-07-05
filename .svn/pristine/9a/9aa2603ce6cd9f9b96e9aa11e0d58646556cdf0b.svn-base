@@ -1,0 +1,13 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+	<p>
+	<span style="color:red;font-size: 1.5em;">${sessionScope.sessionUser.username }</span>
+	<span style="color:blue;font-size: 1.5em;">,欢迎您登录用户信息管理系统!</span>
+	</p>
+</body>
+</html>

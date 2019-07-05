@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../bootstrap2.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <title></title>
+    <link href="../styles/Common.css" rel="stylesheet" />
+    <link href="../styles/Index2.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <h4>帖子列表</h4>
+            
+            <div class="add">
+            	<form>
+            		
+            		<select id = "sectionId" style="width:250px;">
+            			<option value = "0">全部版块</option>
+            		</select>
+            	</form>
+            </div>
+            <div class="w">
+                <div class="span12">
+                    <table class="table table-condensed table-bordered table-hover tab">
+                        <thead>
+                            <tr>
+                                <th>帖子ID</th>
+                                <th>标题</th>
+                                <th>作者</th>
+                                <th>版块</th>
+                                <th>置顶</th>
+                                <th>精品</th>
+                                <th>发帖时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                    <table style="width:100%;">
+                    <tr style="line-height: 20px;">
+                    <td style="width:20%;"></td>
+                    <td style="width:20%;"></td>
+                    <td style="width:20%;"></td>
+                    <td style="width:20%;">
+						<label style ="width:20px; float:right;">页</label>
+						<label id ="totalPages" style ="width:20px; float:right;"></label>
+						<label style ="width:20px; float:right;">共</label>
+					</td>
+                    <td style="width:3.5%;" >
+                    	<a id = "first" style ="float:rifht;">首页</a>
+					</td>
+					<td style="width:4%;"><a id ="last" style ="float:center;">上一页</a></td>
+					<td style="width:5%;text-align:center;">
+						<label style =" width:20px;float:left;">第</label>
+						<label id="pageIndex" style =" width:20px;float:left;"></label>
+						<label style =" width:20px;float:left;">页</label>
+					</td>
+					<td style="width:4%;"><a id ="next" style ="float:center;">下一页</a></td>
+					<td style="width:3.5%;"><a id ="end" style ="float:center;">尾页</a></td>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div id="addModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">修改帖子</h3>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                    
+                    	<div class="control-group" id = "hidePostId">
+                            <label class="control-label" for="postId">帖子ID</label>
+                            <div class="controls">
+                                <input type="text" id="postId" placeholder="帖子ID">
+                            </div>
+                        </div>
+                    
+                        <div class="control-group">
+                            <label class="control-label" for="topPost">是否置顶</label>
+                            <div class="controls">
+                                <input type="text" id="topPost" placeholder="是否置顶">
+                            </div>
+                        </div>
+                                           
+                        
+                        <div class="control-group">
+                            <label class="control-label" for="bestPost">是否精品</label>
+                            <div class="controls">
+                                <input type="text" id="bestPost" placeholder="是否精品">
+                            </div>
+                        </div>
+                        <!--
+                        <div class="control-group">
+                            <label class="control-label" for="English">英语</label>
+                            <div class="controls">
+                                <input type="text" id="English" placeholder="英语">
+                            </div>
+                        </div>
+                        -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    <button class="btn btn-primary" id="add" onclick="add();">保存</button>
+                    <button class="btn btn-primary" id="edt" onclick="edt();">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/jquery-1.9.1.min.js"></script>
+    <script src="../bootstrap2.3.2/js/bootstrap.min.js"></script>
+    <script src="../layer-v2.3/layer/layer.js"></script>
+    <script src="../laypage-v1.3/laypage/laypage.js"></script>
+    <script src="../scripts/PostManager.js"></script>
+</body>
+</html>

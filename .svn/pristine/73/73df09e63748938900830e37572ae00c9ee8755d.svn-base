@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+	    $(function(){
+	    	$("#footEmail").css("color","black");
+	    	$(".footTxt").css({"color":"gray","text-align":"center","margin":"0px","font-size":"14px"});
+	    });
+	</script>
+</head>
+<body>
+	<div id="foot">
+	  <p class="footTxt"><span id="footEmail">email:</span>lishengyuan11@foxmail.com</p>
+	  <p class="footTxt">Copyright &copy; 2015 Nachuan. Some rights reserved:CC</p>
+   </div>
+</body>
+</html>

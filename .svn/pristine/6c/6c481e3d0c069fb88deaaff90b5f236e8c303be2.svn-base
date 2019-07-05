@@ -1,0 +1,277 @@
+package controller;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import net.sf.json.JSONArray;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import domain.Page;
+import domain.Post;
+import domain.Section;
+import domain.User;
+import service.PostYService;
+import service.SequenceGenerator;
+
+@Controller
+@RequestMapping("/bbsYPost/")
+public class PostYController {
+
+	@Autowired
+	private PostYService postYService;
+	@Autowired
+	private SequenceGenerator sequenceGenerator;
+
+	// 帖子查询
+	@RequestMapping("queryPost")
+	@ResponseBody
+	public String queryPost(Page page, Section section) {
+		 page.setPage(1);
+		 page.setRows(5);
+		 section.setSectionId(2);
+		ArrayList<Post> list = postYService.queryPost(page, section);
+		JSONArray jsonArray = JSONArray.fromObject(list);
+		System.out.println(jsonArray.toString());
+		return jsonArray.toString();
+	}
+
+	// 精品帖子查询
+	@RequestMapping("queryBestPost")
+	@ResponseBody
+	public String queryBestPost(Page page, Section section) {
+		// page.setPage(1);
+		// page.setRows(5);
+		// section.setSectionId(1);
+		ArrayList<Post> list = postYService.queryBestPost(page, section);
+		JSONArray jsonArray = JSONArray.fromObject(list);
+		System.out.println(jsonArray.toString());
+		return jsonArray.toString();
+	}
+
+	// 删除帖子
+	@RequestMapping("deletePost")
+	@ResponseBody
+	public boolean deletePost(Post post) {
+		// post.setPostId(222);
+		try {
+			if (postYService.deletePost(post)) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	// 置顶帖子
+	@RequestMapping("updateTopPost")
+	@ResponseBody
+	public boolean updateTopPost(Post post) {
+//		post.setPostId(333);
+//		post.setTopPost(1);
+		try {
+			if (postYService.updateTopPost(post)) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	// 精品贴设置
+	@RequestMapping("updateBestPost")
+	@ResponseBody
+	public boolean updateBestPost(Post post) {
+//		post.setPostId(333);
+//		post.setBestPost(0);
+		try {
+			if (postYService.updateBestPost(post)) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	//回复帖子
+	@RequestMapping("replyPost")
+	@ResponseBody
+	public boolean replyPost(Post post,User user){
+		
+//		user.setUserId(999);
+//		user.setUsername("uouiuiu");
+//		
+//		post.setContent("不错不错");
+//		post.setSectionId(2);
+//		post.setTopic("电脑");
+//		post.setBestPost(0);
+//		post.setTopPost(0);
+//		post.setParentId(22);
+//		post.setParentUserId(12);
+//		post.setParentUsername("mamam");
+//		post.setPostId(11);
+//		post.setUserId(7878);
+//		post.setUsername("yuyuyu");
+		//post.setPostTime("2016-08-23 16:49:47");
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
+		String postTime = df.format(new Date());
+		
+		post.setParentId(post.getPostId());//回复的父ID
+		post.setParentUserId(post.getUserId());//回复的父帖子userId
+		post.setParentUsername(post.getUsername());//回复的父帖子username
+		
+		post.setPostId(sequenceGenerator.nextRechargeOrderSeq());//回复ID
+		post.setUserId(user.getUserId());//回复的用户ID
+		post.setUsername(user.getUsername());//回复的用户名
+		post.setPostTime(postTime);//发表时间
+//		post.setContent("是的是滴");
+//		post.setSectionId(2);
+//		post.setTopic("电脑aaa");
+		post.setBestPost(0);
+		post.setTopPost(0);
+//		System.out.println("----------------------------");
+//		System.out.println(post.getPostId());
+//		System.out.println(post.getBestPost());
+//		System.out.println(post.getContent());
+//		System.out.println(post.getParentUsername());
+//		System.out.println(post.getPostTime());
+//		System.out.println(post.getTopic());
+//		System.out.println(post.getTopPost());
+//		System.out.println(post.getUsername());
+//		System.out.println(post.getParentId());
+//		System.out.println(post.getParentUserId());
+//		System.out.println(post.getSectionId());
+//		System.out.println(post.getUserId());
+//		System.out.println("----------------------------");
+
+		
+		try {
+			if (postYService.addPost(post)) {
+				return true;
+			}else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	//发表帖子
+	@RequestMapping("addPost")
+	@ResponseBody
+	public boolean addPost(Post post,User user){
+		
+		user.setUserId(7878);
+		user.setUsername("yuyuyu");
+		post.setContent("不错不错");
+		post.setSectionId(2);
+		post.setTopic("电脑");
+		post.setBestPost(0);
+		post.setTopPost(0);
+		post.setParentId(-1);
+		post.setParentUserId(12);
+		post.setParentUsername("mamam");
+		
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
+		String postTime = df.format(new Date());
+		try {
+			post.setPostId(sequenceGenerator.nextRechargeOrderSeq());//帖子ID
+			post.setUserId(user.getUserId());//发表帖子的用户ID
+			post.setUsername(user.getUsername());//发表帖子的用户名
+			post.setPostTime(postTime);//发表时间
+//			System.out.println(post.getPostId());
+//			System.out.println(post.getBestPost());
+//			System.out.println(post.getContent());
+//			System.out.println(post.getParentUsername());
+//			System.out.println(post.getPostTime());
+//			System.out.println(post.getTopic());
+//			System.out.println(post.getTopPost());
+//			System.out.println(post.getUsername());
+//			System.out.println(post.getParentId());
+//			System.out.println(post.getParentUserId());
+//			System.out.println(post.getSectionId());
+//			System.out.println(post.getUserId());
+			
+			if (postYService.addPost(post)) {
+				return true;
+			}else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	//查询自己的帖子
+	@RequestMapping("queryPostByUserId")
+	@ResponseBody
+	public String queryPostByUserId(Page page,User user){
+//		 page.setPage(1);
+//		 page.setRows(5);
+//		 user.setUserId(2323);
+		ArrayList<Post> list = postYService.queryPostByUserId(page, user);
+		JSONArray jsonArray = JSONArray.fromObject(list);
+		System.out.println(jsonArray.toString());
+		return jsonArray.toString();
+	}
+	
+	//查看自己的回复
+	@RequestMapping("queryHufuPostByUserId")
+	@ResponseBody
+	public String queryHufuPostByUserId(Page page,User user){
+//		 page.setPage(1);
+//		 page.setRows(5);
+//		 user.setUserId(1212);
+		ArrayList<Post> list = postYService.queryHufuPostByUserId(page, user);
+		JSONArray jsonArray = JSONArray.fromObject(list);
+		System.out.println(jsonArray.toString());
+		return jsonArray.toString();
+	}
+	
+	//删除自己的回复
+	@RequestMapping("deleteHufuByUserId")
+	@ResponseBody
+	public boolean deleteHufuByUserId(User user){
+		user.setUserId(1212);
+		try {
+			if (postYService.deleteHufuByUserId(user)) {
+				return true;
+			}else {
+				return false;
+			}			
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	//删除自己的帖子
+	@RequestMapping("deleteOwnPost")
+	@ResponseBody
+	public boolean deleteOwnPost(Post post){
+//		post.setPostId(333);
+		try {
+			if (postYService.deleteOwnPost(post)) {
+				return true;
+			}else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+}
